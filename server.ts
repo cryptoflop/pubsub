@@ -16,10 +16,10 @@ const server = serve({
     message(ws, msg) {
       try {
         const [action, payload] = JSON.parse(msg as string);
-
+        
         switch (action) {
           case "PUB":
-            ws.publish(payload[0], JSON.stringify(payload))
+            server.publish(payload[0], JSON.stringify(["PUB", payload]))
             break;
           case "SUB":
             ws.subscribe(payload);
@@ -35,8 +35,9 @@ const server = serve({
   },
 });
 
-console.log("Server started");
+console.log("Server started [:" + server.port + "]");
 process.on("SIGINT", () => {
   console.log("Server shutting down");
   server.stop();
+  process.exit();
 });
